@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>TÜYATT SANTRANÇ OYUNU</title>
+   
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chessboard-1.0.0.min.css') }}">
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #2c3e50; /* Koyu tema arkaplan */
+            color: #ecf0f1; /* Açık renk metin */
+        }
+        .game-container {
+            display: flex;
+            align-items: flex-start; /* Elemanları yukarı hizala */
+            gap: 30px; /* Tahta ve panel arası boşluk */
+        }
+        #myBoard {
+            width: 500px; /* Büyütülmüş tahta boyutu */
+        }
+        .info-panel {
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Panel içi boşluk */
+        }
+        .info-panel h1 {
+            margin: 0;
+            text-align: center;
+            color: #ffffff;
+        }
+        #status { 
+            font-size: 1.1em; 
+            font-weight: bold;
+            height: 40px; 
+            text-align: center;
+            color: #e74c3c;
+        }
+        #restartBtn {
+            padding: 12px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #27ae60;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        #restartBtn:hover {
+            background-color: #2ecc71;
+        }
+        .captured-pieces {
+            min-height: 60px;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #34495e;
+            border-radius: 8px;
+            font-size: 28px;
+            line-height: 1.4;
+        }
+        .captured-pieces strong {
+            display: block;
+            font-size: 0.6em;
+            margin-bottom: 5px;
+            color: #bdc3c7;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        
+        <div id="myBoard"></div>
+
+        <div class="info-panel">
+            <h1>Satranç</h1>
+            
+            <div class="captured-pieces">
+                <strong>Siyahın Aldıkları (Beyaz Taşlar):</strong> 
+                <span id="whiteCaptured"></span>
+            </div>
+
+            <div class="captured-pieces">
+                <strong>Beyazın Aldıkları (Siyah Taşlar):</strong> 
+                <span id="blackCaptured"></span>
+            </div>
+
+            <p id="status"></p>
+
+            <button id="restartBtn">Yeniden Başlat</button>
+        </div>
+
+    </div>
+
+    <!-- Script'ler -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/chessboard-1.0.0.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.2/chess.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+
