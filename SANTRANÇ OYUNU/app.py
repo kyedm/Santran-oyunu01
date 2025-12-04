@@ -120,15 +120,20 @@ def minimax(board, depth, alpha, beta, is_maximizing_player):
         return min_eval
 
 def find_best_move(board, depth):
-    try:
-        with chess.polyglot.open_reader("gm2001.bin") as reader:
-            entries = list(reader.find_all(board))
-            if entries:
-                move = random.choices([entry.move for entry in entries], [entry.weight for entry in entries], k=1)[0]
-                print(f"Hamle açılış kitabından bulundu: {move.uci()}")
-                return move
-    except FileNotFoundError:
-        print("Açılış kitabı (gm2001.bin) bulunamadı. Minimax'a geçiliyor.")
+   try:
+    with chess.polyglot.open_reader(BOOK_PATH) as reader:
+        entries = list(reader.find_all(board))
+        if entries:
+            move = random.choices(
+                [entry.move for entry in entries],
+                [entry.weight for entry in entries],
+                k=1
+            )[0]
+            print(f"Hamle açılış kitabından bulundu: {move.uci()}")
+            return move
+except FileNotFoundError:
+    print("Açılış kitabı bulunamadı, Minimax'a geçiliyor.")
+
         pass
     
     print("Açılış kitabında hamle yok, Minimax ile hesaplanıyor...")
@@ -191,4 +196,5 @@ def get_move():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
 
