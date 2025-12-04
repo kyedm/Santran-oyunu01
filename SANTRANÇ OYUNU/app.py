@@ -3,6 +3,10 @@ from flask_cors import CORS
 import chess
 import chess.polyglot
 import random
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BOOK_PATH = os.path.join(BASE_DIR, "gm2001.bin")
 
 # --- GELİŞTİRİLMİŞ YAPAY ZEKA MOTORU (DENGELİ SEVİYE) ---
 
@@ -120,25 +124,28 @@ def minimax(board, depth, alpha, beta, is_maximizing_player):
         return min_eval
 
 def find_best_move(board, depth):
-   try:
-    with chess.polyglot.open_reader(BOOK_PATH) as reader:
-        entries = list(reader.find_all(board))
-        if entries:
-            move = random.choices(
-                [entry.move for entry in entries],
-                [entry.weight for entry in entries],
-                k=1
-            )[0]
-            print(f"Hamle açılış kitabından bulundu: {move.uci()}")
-            return move
-except FileNotFoundError:
-    print("Açılış kitabı bulunamadı, Minimax'a geçiliyor.")
+    # Önce açılış kitabı denenir (polyglot)
+    try:
+        with chess.polyglot.open_reader(BOOK_PATH) as reader:
+            entries = list(reader.find_all(board))
+            if entries:
+                move = random.choices(
+                    [entry.move for entry in entries],
+                    [entry.weight for entry in entries],
+                    k=1
+                )[0]
+                print(f"Hamle açılış kitabından bulundu: {move.uci()}")
+                return move
+    except FileNotFoundError:
+        print("Açılış kitabı bulunamadı, Minimax'a geçiliyor.")
+    except Exception as e:
+        # Polyglot okuma sırasında beklenmeyen hata olursa Minimax'e geç
+        print("Polyglot hata:", e)
 
-        pass
-    
+    # Açılış kitabında yoksa Minimax ile hesapla
     print("Açılış kitabında hamle yok, Minimax ile hesaplanıyor...")
     best_move = None
-    is_maximizing_player = board.turn == chess.WHITE
+    is_maximizing_player = (board.turn == chess.WHITE)
 
     if is_maximizing_player:
         best_value = -float('inf')
@@ -158,8 +165,9 @@ except FileNotFoundError:
             if board_value < best_value:
                 best_value = board_value
                 best_move = move
-                
+
     return best_move
+
 
 # --- FLASK API KISMI ---
 
@@ -195,9 +203,10 @@ def get_move():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    import os
+   
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
+
 
 
 
